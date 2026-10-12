@@ -1,7 +1,7 @@
 import { createNoise2D } from 'simplex-noise'
 
 // Random seeded supaya bentuk gunung selalu sama setiap reload
-function mulberry32(seed) {
+export function mulberry32(seed) {
   return function () {
     seed |= 0
     seed = (seed + 0x6d2b79f5) | 0

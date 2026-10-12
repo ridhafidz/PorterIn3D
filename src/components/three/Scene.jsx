@@ -1,5 +1,8 @@
 import Atmosphere from './Atmosphere'
 import Terrain from './Terrain'
+import Trail from './Trail'
+import Trees from './Trees'
+import Markers from './Markers'
 import Clouds from './Clouds'
 import CameraRig from './CameraRig'
 
@@ -11,6 +14,9 @@ export default function Scene() {
 
       <Atmosphere />
       <Terrain />
+      <Trail />
+      <Trees />
+      <Markers />
       <Clouds />
       <CameraRig />
     </>
