@@ -53,6 +53,7 @@ const KEYS = [
 }))
 
 const { lerp, smoothstep } = THREE.MathUtils
+const WHITE = new THREE.Color('#ffffff')
 
 // Hasil interpolasi disimpan di sini supaya tidak bikin objek baru tiap frame
 const out = {
@@ -109,8 +110,8 @@ const fragmentShader = /* glsl */ `
   void main() {
     float h = clamp(vDir.y, 0.0, 1.0);
     vec3 col = mix(horizonColor, topColor, pow(h, 0.55));
-    float glow = pow(max(dot(normalize(vDir), sunDir), 0.0), 18.0);
-    col += sunColor * glow * 0.55;
+    float glow = pow(max(dot(normalize(vDir), sunDir), 0.0), 24.0);
+    col += sunColor * glow * 0.4;
     gl_FragColor = vec4(col, 1.0);
   }
 `
@@ -120,6 +121,7 @@ export default function Atmosphere() {
   const sky = useRef()
   const sun = useRef()
   const ambient = useRef()
+  const fill = useRef()
 
   const material = useMemo(
     () =>
@@ -167,8 +169,15 @@ export default function Atmosphere() {
     sun.current.color.copy(out.light)
     sun.current.intensity = out.lightI
 
-    ambient.current.color.copy(out.top).lerp(new THREE.Color('#ffffff'), 0.6)
-    ambient.current.intensity = out.ambI
+    // Cahaya langit lembut menggantikan ambient datar
+    ambient.current.color.copy(out.horizon).lerp(WHITE, 0.4)
+    ambient.current.intensity = out.ambI + 0.25
+
+    // Lampu isi dari arah kamera, supaya sisi gunung yang kamu lihat tidak gelap
+    fill.current.position.copy(state.camera.position)
+    fill.current.position.y += 30
+    fill.current.color.copy(out.light).lerp(WHITE, 0.5)
+    fill.current.intensity = 0.9
   })
 
   return (
@@ -177,8 +186,9 @@ export default function Atmosphere() {
         <sphereGeometry args={[400, 32, 16]} />
         <primitive object={material} attach="material" />
       </mesh>
-      <ambientLight ref={ambient} />
+      <hemisphereLight ref={ambient} groundColor="#46553f" />
       <directionalLight ref={sun} />
+      <directionalLight ref={fill} />
     </>
   )
 }

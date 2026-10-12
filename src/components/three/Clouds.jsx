@@ -11,7 +11,7 @@ export default function Clouds({ count = 16 }) {
         const radius = 70 + Math.random() * 90
         const puffCount = 4 + Math.floor(Math.random() * 3)
         return {
-          position: [Math.cos(angle) * radius, 38 + Math.random() * 40, Math.sin(angle) * radius],
+          position: [Math.cos(angle) * radius, 50 + Math.random() * 35, Math.sin(angle) * radius],
           scale: 0.8 + Math.random() * 1.0,
           puffs: Array.from({ length: puffCount }, (_, i) => ({
             position: [(i - puffCount / 2) * 5 + (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 5],

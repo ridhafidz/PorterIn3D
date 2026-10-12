@@ -4,6 +4,8 @@ import Trail from './Trail'
 import Trees from './Trees'
 import Markers from './Markers'
 import Clouds from './Clouds'
+import Birds from './Birds'
+import Snow from './Snow'
 import CameraRig from './CameraRig'
 
 export default function Scene() {
@@ -18,6 +20,8 @@ export default function Scene() {
       <Trees />
       <Markers />
       <Clouds />
+      <Birds />
+      <Snow />
       <CameraRig />
     </>
   )

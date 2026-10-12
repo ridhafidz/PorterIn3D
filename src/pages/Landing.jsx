@@ -1,13 +1,14 @@
 import { Canvas } from '@react-three/fiber'
 import { ScrollControls, Scroll } from '@react-three/drei'
 import Scene from '../components/three/Scene'
+import SectionFader from '../components/ui/SectionFader'
 
 const sections = [
   {
     kicker: 'Teman Setia Pendakianmu',
     title: 'Pendakian tanpa ribet.',
     body: 'Pesan porter profesional, sewa gear, dan rencanakan perjalananmu dalam satu tempat.',
-    cls: 'justify-start items-end pb-16 md:pb-24', // hero di bawah supaya puncak terlihat
+    cls: 'justify-start items-end pb-16 md:pb-24',
   },
   {
     kicker: 'Basecamp',
@@ -40,7 +41,10 @@ function Sections() {
     <div className="w-screen">
       {sections.map((s) => (
         <section key={s.title} className={`flex h-screen px-6 md:px-20 ${s.cls}`}>
-          <div className="max-w-sm rounded-2xl bg-white/60 p-6 text-slate-900 shadow-lg backdrop-blur-md md:max-w-md">
+          <div
+            data-fade
+            className="max-w-sm rounded-2xl bg-white/60 p-6 text-slate-900 shadow-lg backdrop-blur-md md:max-w-md"
+          >
             <p className="text-sm font-semibold uppercase tracking-widest text-emerald-700">
               {s.kicker}
             </p>
@@ -63,9 +67,29 @@ export default function Landing() {
         </span>
       </header>
 
+      {/* Progress pendakian */}
+      <div className="pointer-events-none fixed right-4 top-1/2 z-10 h-40 w-1 -translate-y-1/2 overflow-hidden rounded-full bg-slate-900/15 md:right-8">
+        <div
+          data-progress
+          className="h-full w-full origin-top rounded-full bg-orange-500"
+          style={{ transform: 'scaleY(0)' }}
+        />
+      </div>
+
+      {/* Hint scroll (hilang setelah mulai scroll) */}
+      <div
+        data-hint
+        className="pointer-events-none fixed bottom-6 left-1/2 z-10 hidden -translate-x-1/2 md:block"
+      >
+        <span className="inline-block animate-bounce text-xs font-semibold uppercase tracking-widest text-white/90">
+          Scroll untuk mendaki ↓
+        </span>
+      </div>
+
       <Canvas camera={{ fov: 55, near: 0.1, far: 600, position: [0, 16, 105] }} dpr={[1, 1.5]}>
         <ScrollControls pages={5} damping={0.25}>
           <Scene />
+          <SectionFader count={5} />
           <Scroll html style={{ width: '100%' }}>
             <Sections />
           </Scroll>

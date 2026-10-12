@@ -4,6 +4,14 @@ import { useScroll } from '@react-three/drei'
 import * as THREE from 'three'
 import { getHeight } from '../../utils/terrain'
 
+function easeStops(t, n = 4) {
+  const x = t * n
+  const i = Math.min(Math.floor(x), n - 1)
+  const u = x - i
+  const e = u * u * (3 - 2 * u)
+  return (i + THREE.MathUtils.lerp(u, e, 0.7)) / n
+}
+
 export default function CameraRig() {
   const scroll = useScroll()
   const summitY = useMemo(() => getHeight(0, 0), [])
@@ -27,7 +35,7 @@ export default function CameraRig() {
   const lookCurrent = useRef(new THREE.Vector3(0, summitY * 0.85, 0))
 
   useFrame((state, delta) => {
-    const t = scroll.offset
+    const t = easeStops(scroll.offset)
     const k = 1 - Math.exp(-delta * 4)
 
     curve.getPoint(t, camTarget.current)
