@@ -13,27 +13,27 @@ export default function CameraRig() {
     const steps = 12
     for (let i = 0; i <= steps; i++) {
       const t = i / steps
-      const angle = Math.PI / 2 + t * Math.PI * 1.5 // spiral 270 derajat
-      const r = 88 - t * 70 // dari jauh ke dekat puncak
+      const angle = Math.PI / 2 + t * Math.PI * 1.5
+      const r = 105 - t * 87 // dari jauh (siluet utuh) ke dekat puncak
       const x = Math.cos(angle) * r
       const z = Math.sin(angle) * r
-      points.push(new THREE.Vector3(x, getHeight(x, z) + 10 + t * 6, z))
+      points.push(new THREE.Vector3(x, getHeight(x, z) + 16 + t * 4, z))
     }
     return new THREE.CatmullRomCurve3(points)
   }, [])
 
   const camTarget = useRef(new THREE.Vector3())
   const lookTarget = useRef(new THREE.Vector3())
-  const lookCurrent = useRef(new THREE.Vector3(0, summitY * 0.65, 0))
+  const lookCurrent = useRef(new THREE.Vector3(0, summitY * 0.85, 0))
 
   useFrame((state, delta) => {
     const t = scroll.offset
-    const k = 1 - Math.exp(-delta * 4) // smoothing
+    const k = 1 - Math.exp(-delta * 4)
 
     curve.getPoint(t, camTarget.current)
     state.camera.position.lerp(camTarget.current, k)
 
-    lookTarget.current.set(0, summitY * (0.65 + 0.3 * t), 0)
+    lookTarget.current.set(0, summitY * (0.85 + 0.15 * t), 0)
     lookCurrent.current.lerp(lookTarget.current, k)
     state.camera.lookAt(lookCurrent.current)
   })

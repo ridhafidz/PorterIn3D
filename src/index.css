@@ -11,3 +11,10 @@ body {
   background: #c9d8e3;
   font-family: system-ui, sans-serif;
 }
+
+.no-scrollbar * {
+  scrollbar-width: none;
+}
+.no-scrollbar *::-webkit-scrollbar {
+  display: none;
+}
