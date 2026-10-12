@@ -1,4 +1,8 @@
-# React + Vite
+# PorterIn3D
+
+Recreating past project "PorterIn" using React, Tailwind CSS, and Three.js with additional 3D assets.
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
