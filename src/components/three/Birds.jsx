@@ -2,6 +2,7 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { mulberry32 } from '../../utils/terrain'
+import { skyState } from '../../utils/skyState'
 
 const COUNT = 9
 const COLOR = '#232a38'
@@ -69,11 +70,17 @@ function Bird({ index, wing }) {
 
 export default function Birds() {
   const wing = useMemo(createWingGeometry, [])
+  const group = useRef()
+
+  useFrame(() => {
+    group.current.visible = skyState.day > 0.25
+  })
+
   return (
-    <>
+    <group ref={group}>
       {Array.from({ length: COUNT }, (_, i) => (
         <Bird key={i} index={i} wing={wing} />
       ))}
-    </>
+    </group>
   )
 }

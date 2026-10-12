@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import { ScrollControls, Scroll } from '@react-three/drei'
 import Scene from '../components/three/Scene'
 import SectionFader from '../components/ui/SectionFader'
+import TimeSwitcher from '../components/ui/TimeSwitcher'
 
 const sections = [
   {
@@ -43,13 +44,13 @@ function Sections() {
         <section key={s.title} className={`flex h-screen px-6 md:px-20 ${s.cls}`}>
           <div
             data-fade
-            className="max-w-sm rounded-2xl bg-white/60 p-6 text-slate-900 shadow-lg backdrop-blur-md md:max-w-md"
+            className="glass-card max-w-sm rounded-2xl bg-white/60 p-6 text-slate-900 shadow-lg backdrop-blur-md md:max-w-md"
           >
-            <p className="text-sm font-semibold uppercase tracking-widest text-emerald-700">
+            <p className="kicker text-sm font-semibold uppercase tracking-widest text-emerald-700">
               {s.kicker}
             </p>
-            <h2 className="mt-2 text-3xl font-bold md:text-4xl">{s.title}</h2>
-            <p className="mt-3 text-slate-700">{s.body}</p>
+            <h2 className="card-title mt-2 text-3xl font-bold text-slate-900 md:text-4xl">{s.title}</h2>
+            <p className="card-body mt-3 text-slate-700">{s.body}</p>
           </div>
         </section>
       ))}
@@ -61,14 +62,14 @@ export default function Landing() {
   return (
     <div className="no-scrollbar h-screen w-screen">
       <header className="pointer-events-none fixed left-0 top-0 z-10 flex w-full items-center justify-between px-6 py-4 md:px-20">
-        <span className="text-xl font-bold text-slate-900">PorterIn</span>
-        <span className="pointer-events-auto rounded-full bg-slate-900 px-4 py-2 text-sm text-white">
+        <span className="hdr-title text-xl font-bold text-slate-900">PorterIn</span>
+        <span className="hdr-btn pointer-events-auto rounded-full bg-slate-900 px-4 py-2 text-sm text-white">
           Get Started
         </span>
       </header>
 
       {/* Progress pendakian */}
-      <div className="pointer-events-none fixed right-4 top-1/2 z-10 h-40 w-1 -translate-y-1/2 overflow-hidden rounded-full bg-slate-900/15 md:right-8">
+      <div className="progress-track pointer-events-none fixed right-4 top-1/2 z-10 h-40 w-1 -translate-y-1/2 overflow-hidden rounded-full bg-slate-900/15 md:right-8">
         <div
           data-progress
           className="h-full w-full origin-top rounded-full bg-orange-500"
@@ -85,6 +86,8 @@ export default function Landing() {
           Scroll untuk mendaki ↓
         </span>
       </div>
+
+      <TimeSwitcher />
 
       <Canvas camera={{ fov: 55, near: 0.1, far: 600, position: [0, 16, 105] }} dpr={[1, 1.5]}>
         <ScrollControls pages={5} damping={0.25}>

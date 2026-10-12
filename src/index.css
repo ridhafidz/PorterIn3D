@@ -18,3 +18,22 @@ body {
 .no-scrollbar *::-webkit-scrollbar {
   display: none;
 }
+
+/* UI menyesuaikan diri saat langit gelap (fajar, senja, malam) */
+.hdr-title,
+.hdr-btn,
+.progress-track,
+.glass-card,
+.kicker,
+.card-title,
+.card-body {
+  transition: color 0.6s ease, background-color 0.6s ease;
+}
+
+.sky-dark .hdr-title { color: #fff; }
+.sky-dark .hdr-btn { background: #fff; color: #0f172a; }
+.sky-dark .progress-track { background: rgba(255, 255, 255, 0.22); }
+.sky-dark .glass-card { background: rgba(15, 23, 42, 0.55); }
+.sky-dark .kicker { color: #6ee7b7; }
+.sky-dark .card-title { color: #fff; }
+.sky-dark .card-body { color: #cbd5e1; }
