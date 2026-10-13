@@ -46,6 +46,7 @@ export default function Clouds({ count = 16 }) {
     group.current.rotation.y += delta * 0.01 // berputar pelan mengelilingi gunung
     material.color.copy(skyState.cloud)
     material.emissive.copy(skyState.cloud)
+    material.opacity = 0.55 + 0.37 * skyState.day
   })
 
   return (

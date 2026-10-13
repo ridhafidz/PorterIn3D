@@ -1,8 +1,8 @@
 import Atmosphere from './Atmosphere'
 import Terrain from './Terrain'
-import Trail from './Trail'
 import Trees from './Trees'
-import Markers from './Markers'
+import Savanna from './Savanna'
+import Summit from './Summit'
 import Clouds from './Clouds'
 import Birds from './Birds'
 import Snow from './Snow'
@@ -16,9 +16,9 @@ export default function Scene() {
 
       <Atmosphere />
       <Terrain />
-      <Trail />
       <Trees />
-      <Markers />
+      <Savanna />
+      <Summit />
       <Clouds />
       <Birds />
       <Snow />

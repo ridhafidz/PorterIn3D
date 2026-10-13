@@ -12,19 +12,19 @@ const sections = [
     cls: 'justify-start items-end pb-16 md:pb-24',
   },
   {
-    kicker: 'Basecamp',
+    kicker: 'Kaki Gunung',
     title: 'Tiket & registrasi',
     body: 'Booking tiket masuk gunung favoritmu tanpa harus membuka web taman nasional satu per satu.',
     cls: 'justify-end items-center',
   },
   {
-    kicker: 'Pos 2',
+    kicker: 'Lereng Hutan',
     title: 'Sewa Smart Gear',
     body: 'Pilih paket Solo, Nyaman, atau Digital, bukan item satu per satu.',
     cls: 'justify-start items-center',
   },
   {
-    kicker: 'Pos 3',
+    kicker: 'Sabana/Camp Area',
     title: 'Porter Matchmaking',
     body: 'Dicocokkan berdasarkan pengalaman di gunung tujuan, bahasa, kondisi fisik, dan ulasan.',
     cls: 'justify-end items-center',

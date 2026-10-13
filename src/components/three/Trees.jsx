@@ -1,7 +1,6 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { getHeight, mulberry32 } from '../../utils/terrain'
-import { buildTrailPoints } from '../../utils/trail'
+import { getHeight, mulberry32, savannaFlatWeight } from '../../utils/terrain'
 
 const COUNT = 1800
 const MAX_Y = 19 // batas ketinggian tumbuh pohon
@@ -9,7 +8,6 @@ const PALETTE = ['#1f4d2e', '#2a5e36', '#356b3d', '#1b4332'].map((c) => new THRE
 
 function generateTrees() {
   const rand = mulberry32(7)
-  const trail = buildTrailPoints(180)
   const trees = []
   let tries = 0
 
@@ -29,17 +27,8 @@ function generateTrees() {
     const sz = (getHeight(x, z + 1.5) - getHeight(x, z - 1.5)) / 3
     if (Math.hypot(sx, sz) > 0.85) continue
 
-    // Beri jarak dari jalur pendakian
-    let onTrail = false
-    for (const p of trail) {
-      const dx = p.x - x
-      const dz = p.z - z
-      if (dx * dx + dz * dz < 16) {
-        onTrail = true
-        break
-      }
-    }
-    if (onTrail) continue
+    // Sabana: pohon menipis mendekati lapangan, hilang di dalamnya
+    if (rand() < savannaFlatWeight(x, z) * 1.25) continue
 
     trees.push({
       x,

@@ -8,7 +8,7 @@ import { mulberry32 } from '../../utils/terrain'
 
 const { lerp, smoothstep } = THREE.MathUtils
 
-const STAR_COUNT = 1700
+const STAR_COUNT = 2500
 const MILKY_WAY_STRENGTH = 0.4
 
 // ---- Arah pita Bima Sakti ------------------------------------------------
@@ -26,8 +26,8 @@ const NUM_FIELDS = ['glow', 'lightI', 'hemiI', 'fillI', 'stars']
 
 const NIGHT = {
   top: '#040816', horizon: '#101a38', sun: '#000000', glow: 0,
-  light: '#9db4ff', lightI: 0.55, hemi: '#2a3a6b', hemiI: 0.42,
-  fillI: 0.2, cloud: '#2a3350', stars: 1,
+  light: '#9db4ff', lightI: 0.85, hemi: '#2a3a6b', hemiI: 0.62,
+  fillI: 0.4, cloud: '#2a3350', stars: 1,
 }
 
 const RAW_KEYS = [
@@ -43,11 +43,11 @@ const RAW_KEYS = [
   { h: 12, top: '#2f7fe0', horizon: '#d9ecfa', sun: '#ffffff', glow: 0.3, light: '#ffffff', lightI: 2.4, hemi: '#c4dcf5', hemiI: 0.95, fillI: 0.9, cloud: '#ffffff', stars: 0 },
   { h: 14, top: '#2f7fe0', horizon: '#d9ecfa', sun: '#ffffff', glow: 0.3, light: '#ffffff', lightI: 2.4, hemi: '#c4dcf5', hemiI: 0.95, fillI: 0.9, cloud: '#ffffff', stars: 0 },
   // Sore
-  { h: 16, top: '#3f82d0', horizon: '#f3e3c4', sun: '#ffe0a0', glow: 0.45, light: '#ffe9c4', lightI: 2.1, hemi: '#c4d6ea', hemiI: 0.9, fillI: 0.9, cloud: '#fff0dd', stars: 0 },
+  { h: 16, top: '#3f82d0', horizon: '#f6dbb0', sun: '#ffcf7a', glow: 0.7, light: '#ffe2b0', lightI: 2.1, hemi: '#c4d6ea', hemiI: 0.9, fillI: 0.9, cloud: '#ffe9cc', stars: 0 },
   { h: 17.4, top: '#5b7cc0', horizon: '#ffc78a', sun: '#ffb35c', glow: 0.75, light: '#ffc890', lightI: 1.7, hemi: '#d0b8c0', hemiI: 0.75, fillI: 0.7, cloud: '#ffd6b0', stars: 0 },
   // Senja
-  { h: 18.1, top: '#4a3f86', horizon: '#ff8a6b', sun: '#ff7a4a', glow: 0.85, light: '#ff9a78', lightI: 1.0, hemi: '#8a6fa8', hemiI: 0.55, fillI: 0.4, cloud: '#c98aa0', stars: 0.1 },
-  { h: 18.9, top: '#1a2257', horizon: '#6b5b95', sun: '#b06080', glow: 0.25, light: '#8fa0e0', lightI: 0.7, hemi: '#4a5290', hemiI: 0.45, fillI: 0.25, cloud: '#4a4a7a', stars: 0.55 },
+  { h: 18.1, top: '#4a3f86', horizon: '#ff8a6b', sun: '#ff7a4a', glow: 0.85, light: '#ff9a78', lightI: 1.0, hemi: '#8a6fa8', hemiI: 0.75, fillI: 0.8, cloud: '#c98aa0', stars: 0.1 },
+  { h: 18.9, top: '#1a2257', horizon: '#6b5b95', sun: '#b06080', glow: 0.25, light: '#8fa0e0', lightI: 0.7, hemi: '#4a5290', hemiI: 0.6, fillI: 0.5, cloud: '#4a4a7a', stars: 0.55 },
   // Malam
   { h: 19.8, ...NIGHT },
   { h: 24, ...NIGHT },
@@ -173,13 +173,16 @@ const skyFragment = /* glsl */ `
     // Matahari: cakram + kilau + cahaya cakrawala di sisi matahari
     float sd = max(dot(dir, sunDir), 0.0);
     float sunGlow = pow(sd, 6.0) * 0.18 + pow(sd, 32.0) * 0.35;
-    float sunDisc = smoothstep(0.9993, 0.9997, sd);
+    float sunDisc = smoothstep(0.99985, 0.99992, sd);
     col += sunColor * (sunGlow * glow + sunDisc * 1.4) * sunAmt;
 
     vec2 hd = normalize(dir.xz + vec2(1e-5));
     vec2 sh = normalize(sunDir.xz + vec2(1e-5));
     float side = pow(max(dot(hd, sh), 0.0), 3.0);
     col += sunColor * glow * 0.45 * side * pow(1.0 - h, 5.0) * sunAmt;
+
+    // Posisi relatif terhadap bulan (dipakai Bima Sakti dan bulan)
+    float md = max(dot(dir, moonDir), 0.0);
 
     // Bima Sakti (hanya dihitung saat gelap supaya hemat GPU)
     if (uNight > 0.01) {
@@ -191,14 +194,16 @@ const skyFragment = /* glsl */ `
       float c = pow(max(dot(dir, galaxyC), 0.0), 8.0);
       float mw = (wide * 0.35 + thin * 0.9 + c * 0.8 * thin) * (0.45 + 1.1 * n) * (1.0 - 0.6 * dust);
       vec3 mwCol = mix(vec3(0.30, 0.38, 0.75), vec3(1.0, 0.82, 0.62), clamp(thin * n * 1.6 + c, 0.0, 1.0));
-      col += mwCol * mw * mwStrength * uNight * smoothstep(0.0, 0.12, dir.y);
+
+      // Cahaya bulan memudarkan Bima Sakti di sekitarnya
+      float moonWash = 1.0 - 0.85 * smoothstep(0.90, 0.995, md) * moonAmt;
+      col += mwCol * mw * mwStrength * uNight * smoothstep(0.0, 0.12, dir.y) * moonWash;
     }
 
-    // Bulan
-    float md = max(dot(dir, moonDir), 0.0);
-    float moonDisc = smoothstep(0.9990, 0.9993, md) * (0.8 + 0.3 * noise(dir * 70.0));
-    float moonHalo = pow(md, 90.0) * 0.5 + pow(md, 12.0) * 0.08;
-    col += vec3(0.85, 0.9, 1.0) * (moonDisc * 1.15 + moonHalo) * moonAmt;
+    // Bulan: cakram kecil dan tajam, halo tipis
+    float moonDisc = smoothstep(0.9998, 0.99985, md) * (0.85 + 0.25 * noise(dir * 160.0));
+    float moonHalo = pow(md, 800.0) * 0.3 + pow(md, 60.0) * 0.06;
+    col += vec3(0.85, 0.9, 1.0) * (moonDisc * 1.1 + moonHalo) * moonAmt;
 
     gl_FragColor = vec4(col, 1.0);
   }

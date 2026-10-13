@@ -42,10 +42,14 @@ function Bird({ index, wing }) {
     )
   }
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock, camera }) => {
     const t = clock.elapsedTime
     group.current.position.copy(orbit(t, tmp))
     group.current.lookAt(orbit(t + 0.3, tmp)) // menghadap arah terbang
+
+    // Makin dekat ke kamera makin kecil, supaya tidak pernah jadi bayangan raksasa
+    const d = group.current.position.distanceTo(camera.position)
+    group.current.scale.setScalar(p.scale * THREE.MathUtils.clamp(d / 60, 0.3, 1))
 
     const f = Math.sin(t * p.flap + p.phase) * 0.7
     right.current.rotation.z = f

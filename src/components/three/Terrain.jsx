@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { getHeight, TERRAIN_SIZE } from '../../utils/terrain'
+import { getHeight, savannaGrassWeight, TERRAIN_SIZE } from '../../utils/terrain'
 
 const SEGMENTS = 160
 
@@ -12,6 +12,9 @@ const STOPS = [
   [32, new THREE.Color('#8f8b86')],
   [39, new THREE.Color('#f4f7fa')],
 ]
+
+const GRASS_A = new THREE.Color('#7d9a49')
+const GRASS_B = new THREE.Color('#b9ab57')
 
 function colorForHeight(y, target) {
   if (y <= STOPS[0][0]) return target.copy(STOPS[0][1])
@@ -33,11 +36,23 @@ export default function Terrain() {
     const pos = geo.attributes.position
     const colors = new Float32Array(pos.count * 3)
     const c = new THREE.Color()
+    const grass = new THREE.Color()
 
     for (let i = 0; i < pos.count; i++) {
-      const y = getHeight(pos.getX(i), pos.getZ(i))
+      const x = pos.getX(i)
+      const z = pos.getZ(i)
+      const y = getHeight(x, z)
       pos.setY(i, y)
       colorForHeight(y, c)
+
+      // Sabana: campur warna rumput kekuningan dengan sedikit variasi
+      const g = savannaGrassWeight(x, z)
+      if (g > 0) {
+        const v = 0.5 + 0.5 * Math.sin(x * 1.3 + z * 0.7) * Math.cos(z * 1.1 - x * 0.4)
+        grass.copy(GRASS_A).lerp(GRASS_B, v)
+        c.lerp(grass, g)
+      }
+
       colors.set([c.r, c.g, c.b], i * 3)
     }
 
